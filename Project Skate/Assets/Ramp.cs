@@ -4,17 +4,16 @@ using UnityEngine;
 
 public class Ramp : MonoBehaviour
 {
-    [SerializeField] public bool isLeftRamp;
-    [SerializeField] public bool isStartRamp;
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private Transform jumpingOffPoint;
+    [SerializeField] private Transform fallingOffPoint;
+    [SerializeField] private Transform dropOffPoint;
+    public Transform[] GetRampPoints()
     {
-        
-    }
+        Transform[] points = new Transform[3];
+        points[0] = jumpingOffPoint;
+        points[1] = fallingOffPoint;
+        points[2] = dropOffPoint;
+        return points;
+    } 
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

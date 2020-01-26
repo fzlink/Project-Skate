@@ -7,21 +7,27 @@ public class Skater : MonoBehaviour
 {
     private Rigidbody rb;
 
+    [Header("Movement Properties")]
     [SerializeField] private float forwardSpeed = 20f;
     [SerializeField] private float rotationSpeed = 20f;
-    [SerializeField] private float spinAroundSpeed = 5f;
-    [SerializeField] private float rampJumpFactor = 1000;
 
+    [Header("Ramp Properties")]
+    [SerializeField] private float spinAroundSpeed = 5f;
+    [SerializeField] private float toRampExtentSpeed = 15f;
+    [SerializeField] private float startRampUpRotateSpeed = 300f;
+    [SerializeField] private float finishRampUpRotateSpeed = 600f;
+    [SerializeField] private float rampJumpSpeed = 1.25f;
+    [SerializeField] private float rampJumpHeight = 5f;
+    [SerializeField] private float rampDropOffForwardForce = 10f;
+    [SerializeField] private float rampDropOffHorizontalForce = 5f;
+
+    private Transform[] rampPoints;
     private float Animation;
+    private bool onStartRamp;
     private bool onRamp;
-    private Vector3 tmpPos;
-    private bool isFinishRamp;
-    private Vector3 rampColliderExtentsMin;
     private bool onRampJump;
     private bool isGrounded;
-    private Vector3 rampColliderExtentsMax;
-    private bool isStartRamp;
-    private int isLeftRamp;
+    private bool onFinishRamp;
 
     // Start is called before the first frame update
     void Start()
@@ -50,15 +56,17 @@ public class Skater : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (onRamp || onRampJump) { return; }
+        if (onRamp) { return; }
         Move();
         Rotate();
     }
     private void Update()
     {
-        if (onRamp)
+        if (!onRamp) { return; }
+
+        if (onStartRamp)
         {
-            MoveToRampExtent();
+            MoveToRampJump();
 
         }
         else if (onRampJump)
@@ -66,68 +74,86 @@ public class Skater : MonoBehaviour
             Parabola();
             SpinAround();
         }
+        else if (onFinishRamp)
+        {
+            MoveToRampFinish();
+        }
     }
 
-    private void MoveToRampExtent()
+    private void MoveToRampJump()
     {
-        rb.freezeRotation = true;
-        if (isStartRamp)
+        if (Vector3.Distance(transform.position, rampPoints[0].position) <= 0.1f)
         {
-            if (transform.position.y >= rampColliderExtentsMax.y - 0.1)
-            {
-                onRamp = false;
-                onRampJump = true;
-                tmpPos = transform.position;
-                return;
-            }
-            float step = 15 * Time.deltaTime;
-            transform.position = Vector3.MoveTowards(transform.position, rampColliderExtentsMax, step);
-            transform.Rotate(-Vector3.right * 500 * Time.deltaTime);
-
+            onStartRamp = false;
+            onRampJump = true;
         }
-        else if (isFinishRamp)
+        else
         {
-            if(transform.position.y <= rampColliderExtentsMin.y + 0.1)
-            {
-                onRamp = false;
-                isFinishRamp = false;
-                Straighten();
-                return;
-            }
-            float step = 15 * Time.deltaTime;
-            transform.position = Vector3.MoveTowards(transform.position, rampColliderExtentsMin + Vector3.forward*2, step);
-            transform.Rotate(-Vector3.right * 1000 * Time.deltaTime);
+            float step = toRampExtentSpeed * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, rampPoints[0].position, step);
+            rb.freezeRotation = true;
+            transform.Rotate(-Vector3.right * startRampUpRotateSpeed * Time.deltaTime);
+            rb.freezeRotation = false;
         }
     }
+
+    private void MoveToRampFinish()
+    {
+        if (Vector3.Distance(transform.position, rampPoints[2].position) <= 0.1f)
+        {
+            onFinishRamp = false;
+            Straighten();
+            onRamp = false;
+        }
+        else
+        {
+            float step = toRampExtentSpeed * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, rampPoints[2].position, step);
+            rb.freezeRotation = true;
+            transform.Rotate(-Vector3.right * finishRampUpRotateSpeed * Time.deltaTime);
+            rb.freezeRotation = false;
+        }
+    }
+
 
     private void Straighten()
     {
-        rb.freezeRotation = false;
-        rb.AddForce(new Vector3(1.5f * isLeftRamp, 0, 3.5f) * 225);
-        rb.constraints = RigidbodyConstraints.None;
         transform.rotation = Quaternion.Euler(0, 0, 0);
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        if (transform.position.x < 0) rb.AddForce(Vector3.forward * rampDropOffForwardForce + Vector3.right * rampDropOffHorizontalForce, ForceMode.Impulse);
+        else rb.AddForce(Vector3.forward * rampDropOffForwardForce + Vector3.left * rampDropOffHorizontalForce, ForceMode.Impulse);
     }
 
     private void Parabola()
     {
-        rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY;
-        Animation += Time.deltaTime;
-        Animation = Animation % 5f;
-        transform.position = MathParabola.Parabola(tmpPos, tmpPos+(Vector3.forward*10), 5f, Animation / 1.25f);
+        if(Vector3.Distance(transform.position,rampPoints[1].position) <= 0.2f)
+        {
+            onRampJump = false;
+            onFinishRamp = true;
+        }
+        else
+        {
+            Animation += Time.deltaTime;
+            Animation = Animation % 5f;
+            transform.position = MathParabola.Parabola(rampPoints[0].position, rampPoints[1].position, rampJumpHeight, Animation / rampJumpSpeed);
+        }
     }
-
-    //private void RampJump()
-    //{
-    //    rb.constraints = RigidbodyConstraints.FreezePositionX;
-    //    rb.AddForce(Vector3.up * rampJumpFactor * Time.deltaTime, ForceMode.Impulse);
-    //    onRampJump = true;
-    //}
 
     private void SpinAround()
     {
         rb.freezeRotation = true;
-        transform.Rotate(0, spinAroundSpeed * Time.deltaTime * -isLeftRamp,0);
+        if(Vector3.Distance(transform.position,rampPoints[1].position) <= 2f)
+        {
+            if(transform.position.x>0)
+                transform.rotation = Quaternion.Euler(90, -90, 0);
+            else
+                transform.rotation = Quaternion.Euler(90, 90, 0);
+        }
+        else
+        {
+            transform.Rotate(0, spinAroundSpeed * Time.deltaTime,0);
+        }
+        
         rb.freezeRotation = false;
     }
 
@@ -172,20 +198,9 @@ public class Skater : MonoBehaviour
     {
         if (collision.collider.CompareTag("StartRamp"))
         {
-            isStartRamp = true;
+            onStartRamp = true;
             onRamp = true;
-            if (collision.collider.GetComponent<Ramp>().isLeftRamp) { isLeftRamp = 1; }
-            else { isLeftRamp = -1; }
-            rampColliderExtentsMax = collision.collider.bounds.max;
-        }
-        else if (collision.collider.CompareTag("FinishRamp"))
-        {
-            isFinishRamp = true;
-            onRamp = true;
-            isStartRamp = false;
-            onRampJump = false;
-            rampColliderExtentsMin = collision.collider.bounds.min;
-            Debug.Log(rampColliderExtentsMin);
+            rampPoints = collision.gameObject.GetComponentInParent<Ramp>().GetRampPoints();
         }
     }
 }

@@ -22,4 +22,13 @@ public class MathParabola
         return new Vector2(mid.x, f(t) + Mathf.Lerp(start.y, end.y, t));
     }
 
+    internal static Vector3 Parabola(Vector3 position1, Vector3 position2, object rampJumpHeight, object p)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal static Vector3 Parabola(Vector3 position1, Vector3 position2, float rampJumpHeight, object p)
+    {
+        throw new NotImplementedException();
+    }
 }
