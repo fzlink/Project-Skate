@@ -11,7 +11,7 @@ public class Skater : MonoBehaviour
     [SerializeField] private float forwardSpeed = 20f;
     [SerializeField] private float rotationSpeed = 20f;
 
-    [Header("Ramp Properties")]
+    [Header("Ramp Physics Properties")]
     [SerializeField] private float spinAroundSpeed = 5f;
     [SerializeField] private float toRampExtentSpeed = 15f;
     [SerializeField] private float startRampUpRotateSpeed = 300f;
@@ -20,6 +20,9 @@ public class Skater : MonoBehaviour
     [SerializeField] private float rampJumpHeight = 5f;
     [SerializeField] private float rampDropOffForwardForce = 10f;
     [SerializeField] private float rampDropOffHorizontalForce = 5f;
+    [SerializeField] private float moveToRampExtentThreshold = 0.1f;
+    [SerializeField] private float parabolaFinishThreshold = 0.2f;
+    [SerializeField] private float verticalDirectionThreshold = 2f;
 
     private Transform[] rampPoints;
     private float Animation;
@@ -82,7 +85,7 @@ public class Skater : MonoBehaviour
 
     private void MoveToRampJump()
     {
-        if (Vector3.Distance(transform.position, rampPoints[0].position) <= 0.1f)
+        if (Vector3.Distance(transform.position, rampPoints[0].position) <= moveToRampExtentThreshold)
         {
             onStartRamp = false;
             onRampJump = true;
@@ -99,7 +102,7 @@ public class Skater : MonoBehaviour
 
     private void MoveToRampFinish()
     {
-        if (Vector3.Distance(transform.position, rampPoints[2].position) <= 0.1f)
+        if (Vector3.Distance(transform.position, rampPoints[2].position) <= moveToRampExtentThreshold)
         {
             onFinishRamp = false;
             Straighten();
@@ -126,7 +129,7 @@ public class Skater : MonoBehaviour
 
     private void Parabola()
     {
-        if(Vector3.Distance(transform.position,rampPoints[1].position) <= 0.2f)
+        if(Vector3.Distance(transform.position,rampPoints[1].position) <= parabolaFinishThreshold)
         {
             onRampJump = false;
             onFinishRamp = true;
@@ -142,7 +145,7 @@ public class Skater : MonoBehaviour
     private void SpinAround()
     {
         rb.freezeRotation = true;
-        if(Vector3.Distance(transform.position,rampPoints[1].position) <= 2f)
+        if(Vector3.Distance(transform.position,rampPoints[1].position) <= verticalDirectionThreshold)
         {
             if(transform.position.x>0)
                 transform.rotation = Quaternion.Euler(90, -90, 0);
