@@ -126,7 +126,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-37050
+  m_Name: pb_Mesh-1408
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -451,7 +451,7 @@ Transform:
   m_GameObject: {fileID: 451453988}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 6, y: 1, z: 100}
+  m_LocalScale: {x: 4, y: 1, z: 100}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -1062,13 +1062,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.23166487, y: 0.0014549035, z: -0.0003475976, w: 0.9727946}
-  m_LocalPosition: {x: 0.51, y: 7.66, z: -45.36}
+  m_LocalRotation: {x: 0.17688528, y: 0.0014720695, z: -0.00026566788, w: 0.9842304}
+  m_LocalPosition: {x: 0, y: 6, z: -45.91}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 26.79, y: 0.171, z: 0}
+  m_LocalEulerAnglesHint: {x: 20.377, y: 0.171, z: 0}
 --- !u!114 &963194229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1082,6 +1082,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1202046115}
+  defaultY: 6
+  rampFollowXFactor: 2
+  rampFollowYFactor: 2
 --- !u!1 &1112142713 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8802432101926449589, guid: 473b10420a6ba2940bfd34aac47a4f4a,
@@ -1274,7 +1277,16 @@ MonoBehaviour:
   forwardSpeed: 1200
   rotationSpeed: 150
   spinAroundSpeed: 400
-  rampJumpFactor: 750
+  toRampExtentSpeed: 15
+  startRampUpRotateSpeed: 300
+  finishRampUpRotateSpeed: 600
+  rampJumpSpeed: 1.25
+  rampJumpHeight: 5
+  rampDropOffForwardForce: 10
+  rampDropOffHorizontalForce: 5
+  moveToRampExtentThreshold: 0.1
+  parabolaFinishThreshold: 0.2
+  verticalDirectionThreshold: 2
 --- !u!54 &1202046114
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1303,7 +1315,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-37046
+  m_Name: pb_Mesh-1420
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1466,7 +1478,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh13964
+  m_Name: pb_Mesh13954
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -4315,6 +4327,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 49587038}
+    - target: {fileID: 1323502603008776251, guid: cd6066b575d78894fa9b93b9cfef166d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1323502603101995884, guid: cd6066b575d78894fa9b93b9cfef166d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4389,6 +4406,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RampCouple (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2953545098791681536, guid: cd6066b575d78894fa9b93b9cfef166d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2953545098791681539, guid: cd6066b575d78894fa9b93b9cfef166d,
         type: 3}
@@ -4514,7 +4536,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-6582
+  m_Name: pb_Mesh-1468
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -4677,7 +4699,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-1448
+  m_Name: pb_Mesh-1456
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -4937,6 +4959,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1882248982}
+    - target: {fileID: 1323502603008776251, guid: cd6066b575d78894fa9b93b9cfef166d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1323502603101995884, guid: cd6066b575d78894fa9b93b9cfef166d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4996,6 +5023,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RampCouple
+      objectReference: {fileID: 0}
+    - target: {fileID: 2953545098791681536, guid: cd6066b575d78894fa9b93b9cfef166d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2953545098791681539, guid: cd6066b575d78894fa9b93b9cfef166d,
         type: 3}

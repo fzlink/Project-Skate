@@ -27,7 +27,7 @@ public class Skater : MonoBehaviour
     private Transform[] rampPoints;
     private float Animation;
     private bool onStartRamp;
-    private bool onRamp;
+    public bool onRamp { get; set; }
     private bool onRampJump;
     private bool isGrounded;
     private bool onFinishRamp;
@@ -204,6 +204,7 @@ public class Skater : MonoBehaviour
             onStartRamp = true;
             onRamp = true;
             rampPoints = collision.gameObject.GetComponentInParent<Ramp>().GetRampPoints();
+
         }
     }
 }
