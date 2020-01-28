@@ -154,7 +154,10 @@ public class Skater : MonoBehaviour
         }
         else
         {
-            transform.Rotate(0, spinAroundSpeed * Time.deltaTime,0);
+            if (transform.position.x > 0)
+                transform.Rotate(0, -spinAroundSpeed * Time.deltaTime,0);
+            else
+                transform.Rotate(0, spinAroundSpeed * Time.deltaTime, 0);
         }
         
         rb.freezeRotation = false;
