@@ -7,6 +7,7 @@ TagManager:
   - Ramp
   - StartRamp
   - FinishRamp
+  - StraightRamp
   layers:
   - Default
   - TransparentFX
@@ -16,8 +17,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - StraightRamp
+  - Road
   - 
   - 
   - 

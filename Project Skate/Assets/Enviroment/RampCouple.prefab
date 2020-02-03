@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 8967790956205479067}
   m_Layer: 0
   m_Name: StartPoint
-  m_TagString: Untagged
+  m_TagString: StartRamp
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -176,7 +176,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6679394804836889506}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.66, y: 0, z: 6.79}
+  m_LocalPosition: {x: -0.98, y: 0.13, z: 7.95}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2953545098791681536}
@@ -199,10 +199,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: FinishRamp
       objectReference: {fileID: 0}
+    - target: {fileID: 3135729734936756407, guid: 946844f493d077c48883fe9a14ec86ba,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 3135729734936756408, guid: 946844f493d077c48883fe9a14ec86ba,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.06
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3135729734936756408, guid: 946844f493d077c48883fe9a14ec86ba,
         type: 3}
@@ -277,7 +282,7 @@ PrefabInstance:
     - target: {fileID: 7380380163198779729, guid: b036c57f81b12e44599ae29b0825b8d1,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.06
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7380380163198779729, guid: b036c57f81b12e44599ae29b0825b8d1,
         type: 3}
@@ -343,6 +348,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: StartRamp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7380380163198779742, guid: b036c57f81b12e44599ae29b0825b8d1,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b036c57f81b12e44599ae29b0825b8d1, type: 3}

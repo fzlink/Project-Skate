@@ -6,6 +6,7 @@ using UnityEngine;
 public class Skater : MonoBehaviour
 {
     private Rigidbody rb;
+    private BoxCollider boxCollider;
 
     [Header("Movement Properties")]
     [SerializeField] private float forwardSpeed = 20f;
@@ -29,12 +30,14 @@ public class Skater : MonoBehaviour
     private bool onStartRamp;
     public bool onRamp { get; set; }
     private bool onRampJump;
-    private bool isGrounded;
     private bool onFinishRamp;
+    private bool onStraightRampJump;
+    private bool onAir;
 
     // Start is called before the first frame update
     void Start()
     {
+        boxCollider = GetComponent<BoxCollider>();
         InitializeRigidBodies();
     }
 
@@ -59,28 +62,74 @@ public class Skater : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+
         if (onRamp) { return; }
-        Move();
-        Rotate();
+        if (!isGorunded())
+        {
+            if (onStraightRampJump)
+            {
+                transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y, transform.eulerAngles.z);
+                onAir = true;
+                //onStraightRampJump = false;
+            }
+                rb.AddForce(Physics.gravity  * (rb.mass * rb.mass*5));
+        }
+        else
+        {
+            if (onAir)
+            {
+                rb.AddRelativeForce(transform.forward * 1500 * Time.deltaTime);
+                onStraightRampJump = false;
+                onAir = false;
+            }
+            //if (onStraightRampJump)
+            //{
+            //    rb.AddRelativeForce(transform.forward * 500 * Time.deltaTime);
+            //}
+            Move();
+            Rotate();
+        }
+
+
+        
     }
     private void Update()
     {
-        if (!onRamp) { return; }
 
-        if (onStartRamp)
+        if (onRamp)
         {
-            MoveToRampJump();
+            if (onStartRamp)
+            {
+                MoveToRampJump();
+            }
+            else if (onRampJump)
+            {
+                Parabola();
+                SpinAround();
+            }
+            else if (onFinishRamp)
+            {
+                MoveToRampFinish();
+            }
+        }
+    }
 
-        }
-        else if (onRampJump)
+    private bool isGorunded()
+    {
+        RaycastHit hit;
+        int layerMaskRoad = 1 << 9;
+        int layerMaskRamp = 1 << 8;
+        int finalLayerMask = layerMaskRoad | layerMaskRamp;
+        if(Physics.Raycast(transform.position, Vector3.down, out hit, boxCollider.bounds.extents.y + 0.1f, finalLayerMask))
         {
-            Parabola();
-            SpinAround();
+            Debug.DrawRay(transform.position, Vector3.down, Color.blue);
+            return true;
         }
-        else if (onFinishRamp)
+        else
         {
-            MoveToRampFinish();
+            Debug.DrawRay(transform.position, Vector3.down, Color.red);
         }
+        return false;
     }
 
     private void MoveToRampJump()
@@ -125,6 +174,7 @@ public class Skater : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         if (transform.position.x < 0) rb.AddForce(Vector3.forward * rampDropOffForwardForce + Vector3.right * rampDropOffHorizontalForce, ForceMode.Impulse);
         else rb.AddForce(Vector3.forward * rampDropOffForwardForce + Vector3.left * rampDropOffHorizontalForce, ForceMode.Impulse);
+        rb.constraints = RigidbodyConstraints.None;
     }
 
     private void Parabola()
@@ -170,13 +220,15 @@ public class Skater : MonoBehaviour
             force = forwardSpeed;
         else
             force = 0;
-
-        rb.AddRelativeForce(Vector3.forward * force* Time.deltaTime);
+        if(onStraightRampJump)
+            rb.AddRelativeForce(Vector3.forward * force *5* Time.deltaTime);
+        else
+            rb.AddRelativeForce(Vector3.forward * force* Time.deltaTime);
     }
 
     private void Rotate()
     {
-
+        //transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y, transform.eulerAngles.z);
         if (Input.GetKey(KeyCode.RightArrow))
         {
             transform.Rotate(Vector3.up * rotationSpeed*Time.deltaTime);
@@ -207,7 +259,36 @@ public class Skater : MonoBehaviour
             onStartRamp = true;
             onRamp = true;
             rampPoints = collision.gameObject.GetComponentInParent<Ramp>().GetRampPoints();
-
         }
+        else if (collision.collider.CompareTag("StraightRamp"))
+        {
+
+            onStraightRampJump = true;
+            //TurnDirection();
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.CompareTag("StraightRamp"))
+             rb.AddForce(new Vector3(0,1,1) * 15, ForceMode.Impulse);
+    }
+
+    private void TurnDirection()
+    {
+        RaycastHit hit;
+        LayerMask mask = LayerMask.GetMask("StraightRamp");
+
+        if (Physics.Raycast(transform.position, Vector3.forward,out hit , 5.0f,mask)){
+            if(hit.collider != null)
+            {
+                print("found ramp");
+                Debug.DrawLine(hit.collider.transform.position, hit.normal * 10, Color.red);
+                Debug.Log(Vector3.Angle(Vector3.up, hit.normal));
+                transform.Rotate(-Vector3.right, Vector3.Angle(Vector3.up, hit.normal));
+            }
+        }
+        
+        
     }
 }
